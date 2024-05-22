@@ -8,6 +8,12 @@ export default function SignIn() {
   const [loading,setLoading] = useState(false);
   const navigate=useNavigate();
 
+  const handleChange=async(e)=>{
+    setFormData({
+      ...formData,
+      [e.target.id]: e.target.value.trim()
+    })};
+
   const handleSubmit=async(e)=>{
     e.preventDefault();
     
@@ -42,18 +48,7 @@ export default function SignIn() {
     }
     
 
- const handleChange=async(e)=>{
-      setFormData({
-        ...formData,
-        [e.target.id]: e.target.value,
-      });
-      if(formData){
-        setError(error.message);
-        return;
-       }
-    
-   
- };
+ 
 
   return (
     <div className='p-3 max-w-lg mx-auto'>
@@ -67,9 +62,7 @@ export default function SignIn() {
         <button disabled={loading} className='bg-slate-700 py-3 rounded-lg text-white hover:opacity-95 disabled:opacity-80'>
           {loading ? 'Loading' : 'Sign Up'}
         </button>
-        <button className='bg-red-700 py-3 rounded-lg text-white'>
-          CONTINUE WITH GOOGLE
-        </button>
+        
         <div className='text-sm font-semibold'>
           <span>
             Have an account?
