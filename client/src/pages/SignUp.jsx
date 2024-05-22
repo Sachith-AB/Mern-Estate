@@ -21,6 +21,8 @@ export default function SignIn() {
         body:JSON.stringify(formData),
       });
      const data = await res.json();
+
+     
      
      if(data.success === false){
       setError(data.message);
@@ -41,10 +43,16 @@ export default function SignIn() {
     
 
  const handleChange=async(e)=>{
-    setFormData({
-      ...formData,
-      [e.target.id]: e.target.value,
-    });
+      setFormData({
+        ...formData,
+        [e.target.id]: e.target.value,
+      });
+      if(formData){
+        setError(error.message);
+        return;
+       }
+    
+   
  };
 
   return (
