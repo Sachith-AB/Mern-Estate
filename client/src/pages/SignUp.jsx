@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import {TextInput} from 'flowbite-react';
 import { Link, useNavigate } from 'react-router-dom';
+import OAuth from '../components/OAuth';
 
 export default function SignIn() {
   const [formData,setFormData] = useState({});
@@ -62,7 +63,7 @@ export default function SignIn() {
         <button disabled={loading} className='bg-slate-700 py-3 rounded-lg text-white hover:opacity-95 disabled:opacity-80'>
           {loading ? 'Loading' : 'Sign Up'}
         </button>
-        
+        <OAuth/>
         <div className='text-sm font-semibold'>
           <span>
             Have an account?

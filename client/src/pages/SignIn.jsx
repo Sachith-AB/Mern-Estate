@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import {Alert} from 'flowbite-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { signInStart,signInSuccess,signInFailure } from '../redux/user/userSlice';
+import OAuth from '../components/OAuth';
 
 export default function SignIn() {
   const [formData,setFormData] = useState({});
@@ -70,9 +71,7 @@ export default function SignIn() {
         <button disabled={loading} className='bg-slate-700 py-3 rounded-lg text-white hover:opacity-95 disabled:opacity-80'>
           {loading ? 'Loading' : 'Sign In'}
         </button>
-        <button className='bg-red-700 py-3 rounded-lg text-white'>
-          CONTINUE WITH GOOGLE
-        </button>
+       <OAuth/>
         <div className='text-sm font-semibold'>
           <span>
             Don't have an account?

@@ -14,6 +14,10 @@ const userSchema= new mongoose.Schema({
     password:{
         type:String,
         required:true,
+    },
+    avatar:{
+       type:String,
+       default: "https://static.vecteezy.com/system/resources/previews/002/387/693/non_2x/user-profile-icon-free-vector.jpg"
     }
 },{timestamps:true});
 
