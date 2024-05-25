@@ -45,6 +45,10 @@ export default function Profile() {
     })
   }
 
+  const handleUpdate=async(e)=>{
+    e.preventDefault();
+  }
+
   return (
     <div className='p-3 max-w-lg mx-auto'>
       <h1 className='text-3xl font-bold text-center my-7'>
@@ -52,7 +56,7 @@ export default function Profile() {
       </h1>
       <div className='flex justify-center'>
       <input type="file" ref={fileRef} hidden accept='image/*' onChange={(e)=>setFile(e.target.files[0])}/>
-      <img onClick={()=>{fileRef.current.click()}} src={formData.avatar || currentUser.avatar} className='rounded-full h-40 w-40'/>
+      <img onClick={()=>{fileRef.current.click()}} src={formData.avatar ||  currentUser.avatar} className='rounded-full h-40 w-40'/>
      
       </div>
       <p className='text-sm self-center flex flex-col text-center'>
@@ -74,7 +78,7 @@ export default function Profile() {
           <input type="text" value={currentUser.username} className='border-none rounded-lg' placeholder='username' id='username' />
           <input type="text" value={currentUser.email} className='border-none rounded-lg' placeholder='email' id='email'/>
           <input type="password"  className='border-none rounded-lg' placeholder='password' id='password'/>
-          <button className='bg-slate-700 py-3 rounded-lg text-white hover:scale-105 transition-transform duration-200'>Update</button>
+          <button className='bg-slate-700 py-3 rounded-lg text-white hover:scale-105 transition-transform duration-200' onClick={handleUpdate}>Update</button>
           <button className='bg-green-600 py-3 text-white rounded-lg hover:scale-105 transition-transform duration-200'>Create Listing</button>
         </form>
         <div className='flex justify-between text-red-600 mt-3'>
