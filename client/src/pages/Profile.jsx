@@ -2,17 +2,24 @@ import React, { useEffect, useRef, useState } from 'react'
 import {useSelector} from 'react-redux'
 import {getDownloadURL, getStorage,ref, uploadBytesResumable} from 'firebase/storage'
 import { app } from '../firebase';
+import { updateUserStart,updateUserFailure,updateUserSucess ,signOutSucess} from '../redux/user/userSlice.js';
+import { useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
+
 
 
 
 export default function Profile() {
 
-  const {currentUser} = useSelector((state)=>state.user);
+  const {currentUser,loading,error} = useSelector((state)=>state.user);
   const fileRef = useRef(null);
   const [file,setFile] = useState(undefined)
   const [filePerc,setFilePerc] = useState(0);
   const[fileUploadError,setFieUploadError] = useState(false);
   const [formData,setFormData]=useState({});
+  const dispatch = useDispatch();
+  const [updateSuccess,setUpdateSuccess] = useState(false);
+  //console.log(formData);
   
 
 
@@ -44,22 +51,76 @@ export default function Profile() {
       })
     })
   }
+const handleChange = (e) => {
+  setFormData({...formData,[e.target.id]:e.target.value})
+}
 
-  const handleUpdate=async(e)=>{
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  try{
+    dispatch(updateUserStart());
+    const res = await fetch(`/api/user/update/${currentUser._id}`,{
+      method:"PUT",
+      headers:{
+        'Content-Type' : 'application/json',
+      },
+      body:JSON.stringify(formData),
+    });
+    const data = await res.json();
+    if(data.success === false){
+      dispatch(updateUserFailure(error.message));
+      return
+    }
+    dispatch(updateUserSucess(data));
+    setUpdateSuccess(true);
+  }
+  catch(error){
+    dispatch(updateUserFailure(error.message))
+  }
+}
+
+const handleSignOut=async()=>{
+  try{
+    const res= await fetch('/api/user/signout',{
+        method:'POST'
+    })
+    const data = await res.json();
+    if(!res.ok){
+        console.log(data.message)
+    }
+    else{
+        dispatch(signOutSucess())
+    }
+
+}
+catch(error){
+    console.log(data.message)
   }
 
+ 
+}
+const handleDeleteUser=async()=>{
+    
+}
   return (
     <div className='p-3 max-w-lg mx-auto'>
-      <h1 className='text-3xl font-bold text-center my-7'>
-        Profile
-      </h1>
-      <div className='flex justify-center'>
-      <input type="file" ref={fileRef} hidden accept='image/*' onChange={(e)=>setFile(e.target.files[0])}/>
-      <img onClick={()=>{fileRef.current.click()}} src={formData.avatar ||  currentUser.avatar} className='rounded-full h-40 w-40'/>
-     
-      </div>
-      <p className='text-sm self-center flex flex-col text-center'>
+      <h1 className='text-3xl font-semibold text-center my-7'>Profile</h1>
+
+      <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
+        <input
+          onChange={(e) => setFile(e.target.files[0])}
+          type='file'
+          ref={fileRef}
+          hidden
+          accept='image/*'
+        />
+        <img
+          onClick={() => fileRef.current.click()}
+          src={formData.avatar || currentUser.avatar}
+          alt='profile'
+          className='rounded-full h-24 w-24 object-cover cursor-pointer self-center mt-2'
+        />
+        <p className='text-sm self-center'>
           {fileUploadError ? (
             <span className='text-red-700'>
               Error Image upload (image must be less than 2 mb)
@@ -67,34 +128,64 @@ export default function Profile() {
           ) : filePerc > 0 && filePerc < 100 ? (
             <span className='text-slate-700'>{`Uploading ${filePerc}%`}</span>
           ) : filePerc === 100 ? (
-            <span className='text-green-500'>Image successfully uploaded!</span>
+            <span className='text-green-700'>Image successfully uploaded!</span>
           ) : (
             ''
           )}
         </p>
-      
-        <form action="" className='flex flex-col gap-4 mt-4'>
-          
-          <input type="text" value={currentUser.username} className='border-none rounded-lg' placeholder='username' id='username' />
-          <input type="text" value={currentUser.email} className='border-none rounded-lg' placeholder='email' id='email'/>
-          <input type="password"  className='border-none rounded-lg' placeholder='password' id='password'/>
-          <button className='bg-slate-700 py-3 rounded-lg text-white hover:scale-105 transition-transform duration-200' onClick={handleUpdate}>Update</button>
-          <button className='bg-green-600 py-3 text-white rounded-lg hover:scale-105 transition-transform duration-200'>Create Listing</button>
-        </form>
-        <div className='flex justify-between text-red-600 mt-3'>
-          <span className='cursor-pointer hover:underline'>
-            Delete Account
-          </span>
-          <span className='cursor-pointer hover:underline'>
-            Sign Out
-          </span>
-        </div>
-
-        <p className='text-center text-green-600 cursor-pointer hover:underline'>
-          Show Listing
-        </p>
-        
-      
+        <input
+          type='text'
+          placeholder='username'
+          defaultValue={currentUser.username}
+          id='username'
+          className='border p-3 rounded-lg'
+          onChange={handleChange}
+        />
+        <input
+          type='email'
+          placeholder='email'
+          id='email'
+          defaultValue={currentUser.email}
+          className='border p-3 rounded-lg'
+          onChange={handleChange}
+        />
+        <input
+          type='password'
+          placeholder='password'
+          onChange={handleChange}
+          id='password'
+          className='border p-3 rounded-lg'
+        />
+        <button
+          disabled={loading}
+          className='bg-slate-700 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80'
+        >
+          {loading ? 'Loading...' : 'Update'}
+        </button>
+        <Link
+          className='bg-green-700 text-white p-3 rounded-lg uppercase text-center hover:opacity-95'
+          to={'/create-listing'}
+        >
+          Create Listing
+        </Link>
+      </form>
+      <div className='flex justify-between mt-5'>
+        <span
+          onClick={handleDeleteUser}
+          className='text-red-700 cursor-pointer'
+        >
+          Delete account
+        </span>
+        <span onClick={handleSignOut} className='text-red-700 cursor-pointer'>
+          Sign out
+        </span>
+      </div>
+      <p className='text-red-600'>
+        {error ? error:''}
+      </p>
+      <p className='text-red-600'>
+        {updateSuccess ? updateSuccess:''}
+      </p>
     </div>
   )
 }
