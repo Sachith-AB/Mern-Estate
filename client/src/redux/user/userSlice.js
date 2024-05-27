@@ -1,3 +1,4 @@
+import { load } from "@npmcli/package-json";
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
@@ -41,11 +42,35 @@ const userSlice = createSlice({
             state.currentUser=null;
             state.error=null;
             state.loading=false;
+        },
+        deleteUserStart:(state)=>{
+            state.loading = true;
+            state.error = null;
+        },
+        deleteUserFailure:(state,action)=>{
+            state.loading=false;
+            state.error=action.payload;
+        },
+        deleteUserSuccess:(state)=>{
+            state.loading = null;
+            state.error=null;
+            state.currentUser=null;
         }
 
     }
 });
 
-export const {signInStart,signInSuccess,signInFailure,updateUserFailure,updateUserStart,updateUserSucess,signOutSucess} = userSlice.actions;
+export const {
+    signInStart,
+    signInSuccess,
+    signInFailure,
+    updateUserFailure,
+    updateUserStart,
+    updateUserSucess,
+    signOutSucess,
+    deleteUserStart,
+    deleteUserSuccess,
+    deleteUserFailure,
+    } = userSlice.actions;
 
 export default userSlice.reducer;
