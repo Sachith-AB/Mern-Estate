@@ -6,4 +6,5 @@ const router = express.Router();
 
 router.post('/create',verifyTokrn,create);
 
+
 export default router;
