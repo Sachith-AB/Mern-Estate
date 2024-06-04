@@ -133,6 +133,14 @@ const handleDeleteUser=async()=>{
     }
 }
 
+const handleDeleteListing = async () =>{
+  try{
+
+  }catch(error){
+    
+  }
+}
+
 const handleShowListing = async () => {
   try{
     setShowListingError(false);
@@ -263,7 +271,7 @@ const handleShowListing = async () => {
             <p className='text-slate-700 font-semibold hover:underline truncate'>{listing.name}</p>
             </Link>
             <div className='flex gap-2'>
-              <button className='uppercase text-red-600 hover:underline'>
+              <button className='uppercase text-red-600 hover:underline' onClick={handleDeleteListing}>
                 delete
               </button>
               <button className='uppercase text-green-600 hover:underline'>
