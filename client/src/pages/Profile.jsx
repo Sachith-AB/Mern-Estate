@@ -18,6 +18,8 @@ import {HiOutlineExclamationCircle} from 'react-icons/hi'
 
 
 
+
+
 export default function Profile() {
 
   const {currentUser,loading,error} = useSelector((state)=>state.user);
@@ -29,6 +31,8 @@ export default function Profile() {
   const dispatch = useDispatch();
   const [updateSuccess,setUpdateSuccess] = useState(false);
   const [showModal,setShowModal] = useState(false);
+  const [showListingError,setShowListingError] = useState(false);
+  const [getListings,setGetListings] = useState([]);
   
   
 
@@ -128,6 +132,23 @@ const handleDeleteUser=async()=>{
       dispatch(deleteUserSuccess(error.message));
     }
 }
+
+const handleShowListing = async () => {
+  try{
+    setShowListingError(false);
+    const res = await fetch(`/api/user/listings/${currentUser._id}`);
+    
+    const data = await res.json();
+    if(data.success === false){
+      setShowListingError(true);
+      return;
+    } 
+    setGetListings(data);
+  }
+  catch(error){
+    setShowListingError(true);
+  }
+}
   return (
     <div className='p-3 max-w-lg mx-auto'>
       <h1 className='text-3xl font-semibold text-center my-7'>Profile</h1>
@@ -210,6 +231,50 @@ const handleDeleteUser=async()=>{
       <p className='text-green-600 text-center'>
         {updateSuccess ? 'User updated successfully':''}
       </p>
+
+      <div className='flex justify-center'>
+      <button className='text-green-700 cursor-pointer hover:underline' onClick={handleShowListing}>
+        Show Listing
+      </button>
+      </div>
+
+      <p className='text-red-600'>
+        {showListingError && 'Error showing listing'}
+      </p>
+
+      {
+        getListings && getListings.length>0 && 
+          <div className='text-center'>
+            <h1 className='text-3xl font-bold text-slate-700'>
+              Your Listings
+            </h1>
+          </div>
+        
+      }
+
+      { 
+        getListings && getListings.length > 0 && getListings.map((listing) =>(
+         <div key={listing._id} className='flex justify-between border rounded-lg items-center p-3 mt-3'>
+            <Link className='' to={`/listing/${listing._id}`}>
+              <img src={listing.imageUrls[0]} alt="listings cover" className='h-16 w-16 object-contain'/>
+              
+            </Link>
+            <Link to={`/listing/${listing._id}`}>
+            <p className='text-slate-700 font-semibold hover:underline truncate'>{listing.name}</p>
+            </Link>
+            <div className='flex gap-2'>
+              <button className='uppercase text-red-600 hover:underline'>
+                delete
+              </button>
+              <button className='uppercase text-green-600 hover:underline'>
+                edit
+              </button>
+            </div>
+         </div> 
+          )
+        )
+      }
+
       <Modal show = {showModal} onClose={() => setShowModal(false)} popupsize='md' className=''>
       <Modal.Header/>
              <Modal.Body>
