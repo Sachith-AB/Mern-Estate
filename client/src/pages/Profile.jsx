@@ -287,9 +287,9 @@ const handleShowListing = async () => {
               <button className='uppercase text-red-600 hover:underline' onClick={()=>handleDeleteListing(listing._id)}>
                 delete
               </button>
-              <button className='uppercase text-green-600 hover:underline'>
+              <Link to={`/update-listing/${listing._id}`} className='uppercase text-green-600 hover:underline'>
                 edit
-              </button>
+              </Link>
             </div>
          </div> 
           )
