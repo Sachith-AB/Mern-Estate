@@ -33,6 +33,7 @@ export default function Profile() {
   const [showModal,setShowModal] = useState(false);
   const [showListingError,setShowListingError] = useState(false);
   const [getListings,setGetListings] = useState([]);
+  const [deleteListingError,setDeleteListingError] = useState(false);
   
   
 
@@ -133,11 +134,23 @@ const handleDeleteUser=async()=>{
     }
 }
 
-const handleDeleteListing = async () =>{
+const handleDeleteListing = async (listingId) =>{
   try{
+    const res = await fetch(`/api/listing/deletelisting/${listingId}/${currentUser._id}`,{
+      method:'DELETE',
+      
+    });
+    const data = await res.json();
+
+    if(data.success === false){
+      setDeleteListingError(data.message);
+      return;
+    }
+
+    setGetListings((prev) => prev.filter((listing) => listing._id !== listingId));
 
   }catch(error){
-    
+    deleteListingError(error.message);
   }
 }
 
@@ -271,7 +284,7 @@ const handleShowListing = async () => {
             <p className='text-slate-700 font-semibold hover:underline truncate'>{listing.name}</p>
             </Link>
             <div className='flex gap-2'>
-              <button className='uppercase text-red-600 hover:underline' onClick={handleDeleteListing}>
+              <button className='uppercase text-red-600 hover:underline' onClick={()=>handleDeleteListing(listing._id)}>
                 delete
               </button>
               <button className='uppercase text-green-600 hover:underline'>
