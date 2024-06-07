@@ -5,6 +5,8 @@ import  SwiperCore  from 'swiper';
 import {Navigation} from 'swiper/modules';
 import 'swiper/css/bundle';
 import {FaMapMarkerAlt,FaBath,FaBed,FaChair,FaMapMarkedAlt,FaParking} from 'react-icons/fa'
+import { useSelector} from 'react-redux'
+import Contact from '../components/Contact';
 
 export default function Listing_Page() {
     SwiperCore.use([Navigation]);
@@ -12,6 +14,8 @@ export default function Listing_Page() {
     const [listing,setListing] = useState(null);
     const [loading,setLoading] = useState(false);
     const [error,setError]  = useState(false);
+    const currentUser = useSelector((state)=>state.user);
+    const [contact,setContact] = useState(false);
 
 useEffect(()=>{
     
@@ -100,6 +104,14 @@ useEffect(()=>{
                 {listing.furnished ? 'Furnished' : 'Unfurnished'}
                 </li>
             </ul>
+           {
+            currentUser && listing.userRef !== currentUser._id && !contact && (
+              <button onClick={()=>setContact(true)} className='bg-slate-700 w-full rounded-lg text-center py-2 text-white mt-4'>Contact landlord</button>
+            )
+           }
+           {
+            contact && <Contact listing = {listing}/>
+           }
             </div>
 
             </>
