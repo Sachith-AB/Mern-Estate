@@ -155,16 +155,23 @@ const handleDeleteListing = async (listingId) =>{
 }
 
 const handleShowListing = async () => {
+  
   try{
     setShowListingError(false);
     const res = await fetch(`/api/user/listings/${currentUser._id}`);
     
     const data = await res.json();
+    
     if(data.success === false){
       setShowListingError(true);
       return;
     } 
     setGetListings(data);
+   
+    if(data.success === true){
+      setShowListingError(false);
+      return;
+    } 
   }
   catch(error){
     setShowListingError(true);
@@ -265,8 +272,8 @@ const handleShowListing = async () => {
 
       {
         getListings && getListings.length>0 && 
-          <div className='text-center'>
-            <h1 className='text-3xl font-bold text-slate-700'>
+          <div className='text-center border-spacing-1'>
+            <h1 className='text-3xl font-bold text-slate-700 py-10'>
               Your Listings
             </h1>
           </div>
