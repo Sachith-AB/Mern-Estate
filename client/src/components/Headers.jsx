@@ -38,7 +38,7 @@ export default function Headers() {
         </h1>
         </Link>
         <form action="" className='bg-slate-100  rounded-full flex items-center ' onSubmit={handleSubmit}>
-            <input type="text" placeholder='Search...' className='custom-input bg-transparent border-none w-24 lg:w-64 '
+            <input type="text" placeholder='Search...' className='custom-input bg-transparent border-none w-24 lg:w-64 focus:ring-0'
             value={searchTerm}
             onChange={(e) =>setSearchTerm(e.target.value)}/>
             <button><FaSearch className='text-slate-500 mr-4'/></button>
