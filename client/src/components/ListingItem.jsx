@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { MdLocationOn } from 'react-icons/md';
 
+
 export default function ListingItem({ listing }) {
   return (
     <div className='bg-white shadow-md hover:shadow-lg transition-shadow overflow-hidden rounded-lg w-full sm:w-[330px]'>
@@ -33,7 +34,7 @@ export default function ListingItem({ listing }) {
               : listing.regularPrice.toLocaleString('en-US')}
             {listing.type === 'rent' && ' / month'}
           </p>
-          <div className='text-slate-700 flex gap-4'>
+          <div className=' flex gap-4 text-green-600'>
             <div className='font-bold text-xs'>
               {listing.bedrooms > 1
                 ? `${listing.bedrooms} beds `
@@ -46,6 +47,13 @@ export default function ListingItem({ listing }) {
             </div>
             <div className='font-bold text-xs '>
             {listing.type === 'rent' ? <p className='text-red-600'>Rent</p>:<p className='text-green-600'>Sale</p>}
+            </div>
+            <div className='font-bold text-xs text-green-600'>
+              {listing.furnished && `furnished`}
+            </div>
+            <div className='font-bold text-xs text-green-600 flex items-center gap-1'>
+              
+              {listing.parking && `parking`}
             </div>
           </div>
         </div>
