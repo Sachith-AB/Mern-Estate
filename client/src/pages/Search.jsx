@@ -7,6 +7,7 @@ export default function Search() {
     const navigate = useNavigate();
     const [loading,setLoading] = useState(false);
     const [listing,setListing] = useState([]);
+    const [showMore,setShowMore] = useState(false);
 
     useEffect(()=>{
         const urlParams = new URLSearchParams(location.search);
@@ -39,9 +40,16 @@ export default function Search() {
 
         const fetchListing = async () =>{
             setLoading(true);
+            setShowMore(false);
             const searchQuery = urlParams.toString();
             const res = await fetch(`/api/listing/getlistings?${searchQuery}`);
             const data = await res.json();
+            if(data.length > 8){
+                setShowMore(true);
+            }
+            else{
+                setShowMore(false);
+            }
             setListing(data);
             setLoading(false);
         };
@@ -93,7 +101,21 @@ export default function Search() {
         urlParams.set('order',sideBarData.order);
         const searchQuery = urlParams.toString();
         navigate(`/search?${searchQuery}`);
+        
+    }
 
+    const onShowMoreClick = async () =>{
+        const numberOfListings = listing.length;
+        const startIndex = numberOfListings;
+        const urlParams = new URLSearchParams(location.search);
+        urlParams.set('startIndex',startIndex);
+        const searchQuery = urlParams.toString();
+        const res = await fetch(`/api/listing/getlistings?${searchQuery}`);
+        const data = await res.json();
+        if (data.length < 9) {
+        setShowMore(false);
+    }
+        setListing([...listing, ...data]);
     }
 
     
@@ -175,7 +197,7 @@ export default function Search() {
             </form>
         </div>
         {/*right*/}
-        <div className='items-center text-center'>
+        <div className=''>
             <h1 className='text-3xl font-bold text-slate-700 p-4'>Listing result:</h1>
             <div className='p-7 flex flex-wrap gap-4'>
                 {!loading && listing.length === 0 && (
@@ -197,6 +219,12 @@ export default function Search() {
                 }
 
 
+
+            </div>
+            <div className='text-center mb-4'>
+            {showMore && (
+                <button onClick={onShowMoreClick} className='text-green-600 hover:underline'> Show More</button>
+            )}
             </div>
         </div>
     </div>

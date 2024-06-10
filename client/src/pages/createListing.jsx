@@ -49,10 +49,7 @@ export default function CreateListing() {
                 setUploading(false);
             })
         }
-        else if(files.length === 0){
-            setImageUploadError('Image field is required');
-            setUploading(false);
-        }
+        
         else{
             setImageUploadError('You can only uploaded 6 image per listing');
         }
