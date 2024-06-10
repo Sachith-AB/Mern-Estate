@@ -1,11 +1,54 @@
 import React, { useEffect, useState } from 'react'
 import {useNavigate} from 'react-router-dom'
+import ListingItem from '../components/ListingItem';
 
 
 export default function Search() {
     const navigate = useNavigate();
     const [loading,setLoading] = useState(false);
-    const [listing,setListing] = ([]);
+    const [listing,setListing] = useState([]);
+
+    useEffect(()=>{
+        const urlParams = new URLSearchParams(location.search);
+        const searchTermFromUrl = urlParams.get('searchTerm');
+        const typeFromUrl = urlParams.get('type');
+        const parkingFromUrl = urlParams.get('parking');
+        const furnishedFromUrl = urlParams.get('furnished');
+        const offerFromUrl = urlParams.get('offer');
+        const sortFromUrl = urlParams.get('sort');
+        const orderFromUrl = urlParams.get('order');
+
+        if(searchTermFromUrl ||
+            typeFromUrl ||
+            parkingFromUrl ||
+            furnishedFromUrl ||
+            offerFromUrl ||
+            sortFromUrl ||
+            orderFromUrl 
+        ){
+            setSideBarDate({
+                searchTerm:searchTermFromUrl || '',
+                type:typeFromUrl || 'all',
+                parking:parkingFromUrl === 'true' ? true : false,
+                furnished:furnishedFromUrl === 'true' ? true : false,
+                offer:offerFromUrl === 'true' ? true : false,
+                sort:sortFromUrl === 'created_at',
+                order:orderFromUrl || 'desc'
+         });
+        }
+
+        const fetchListing = async () =>{
+            setLoading(true);
+            const searchQuery = urlParams.toString();
+            const res = await fetch(`/api/listing/getlistings?${searchQuery}`);
+            const data = await res.json();
+            setListing(data);
+            setLoading(false);
+        };
+        fetchListing();
+
+    },[location.search]);
+
 
     const [sideBarData,setSideBarDate] = useState({
         searchTerm:'',
@@ -53,47 +96,7 @@ export default function Search() {
 
     }
 
-    useEffect(()=>{
-        const urlParams = new URLSearchParams(location.search);
-        const searchTermFromUrl = urlParams.get('searchTerm');
-        const typeFromUrl = urlParams.get('type');
-        const parkingFromUrl = urlParams.get('parking');
-        const furnishedFromUrl = urlParams.get('furnished');
-        const offerFromUrl = urlParams.get('offer');
-        const sortFromUrl = urlParams.get('sort');
-        const orderFromUrl = urlParams.get('order');
-
-        if(searchTermFromUrl ||
-            typeFromUrl ||
-            parkingFromUrl ||
-            furnishedFromUrl ||
-            offerFromUrl ||
-            sortFromUrl ||
-            orderFromUrl 
-        ){
-            setSideBarDate({
-                searchTerm:searchTermFromUrl || '',
-                type:typeFromUrl || 'all',
-                parking:parkingFromUrl === 'true' ? true : false,
-                furnished:furnishedFromUrl === 'true' ? true : false,
-                offer:offerFromUrl === 'true' ? true : false,
-                sort:sortFromUrl === 'created_at',
-                order:orderFromUrl || 'desc'
-         });
-        }
-
-        const fetchListing = async () =>{
-            setLoading(true);
-            const searchQuery = urlParams.toString();
-            const res = await fetch(`/api/listing/getlistings?${searchQuery}`);
-            const data = await res.json();
-            setListing(data);
-            setLoading(false);
-        };
-        fetchListing();
-
-    },[location.search]);
-
+    
     
 
   return (
@@ -168,12 +171,33 @@ export default function Search() {
                         <option value="createdAt_asc">Oldest</option>
                     </select>
                 </div>
-                <button className='w-full rounded-lg text-white bg-slate-700 py-3 uppercase hover:opacity-95'>search</button>
+                <button disabled={loading} className='w-full rounded-lg text-white bg-slate-700 py-3 uppercase hover:opacity-95'>search</button>
             </form>
         </div>
         {/*right*/}
         <div className='items-center text-center'>
             <h1 className='text-3xl font-bold text-slate-700 p-4'>Listing result:</h1>
+            <div className='p-7 flex flex-wrap gap-4'>
+                {!loading && listing.length === 0 && (
+                        <p className='text-lg text-center text-slate-700'>No result found..!</p>
+                    )
+                }
+                {
+                    loading && ( 
+                        <p className='text-red-500 text-lg'>
+                            Loading...
+                        </p>
+                    )
+                }
+
+                {
+                    !loading && listing && listing.map((listing)=>(
+                        <ListingItem key={listing._id} listing={listing} className=""/>
+                    ))
+                }
+
+
+            </div>
         </div>
     </div>
   )
