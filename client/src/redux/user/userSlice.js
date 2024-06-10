@@ -1,4 +1,3 @@
-import { load } from "@npmcli/package-json";
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
