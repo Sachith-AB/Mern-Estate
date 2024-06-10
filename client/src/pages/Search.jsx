@@ -114,7 +114,7 @@ export default function Search() {
         const data = await res.json();
         if (data.length < 9) {
         setShowMore(false);
-    }
+        }
         setListing([...listing, ...data]);
     }
 
@@ -187,8 +187,8 @@ export default function Search() {
                     <select name="" id="sort_order" className='border-none rounded-lg focus:ring-0'
                     onChange={handelChanege}
                     defaultValue={'created_at_desc'}>
-                        <option value="regularPrice_desc">Price low to high</option>
-                        <option value="regularPrice_asc">Price high to low</option>
+                        <option value="regularPrice_desc">Price high to low</option>
+                        <option value="regularPrice_asc">Price low to high</option>
                         <option value="createdAt_desc">Latest</option>
                         <option value="createdAt_asc">Oldest</option>
                     </select>

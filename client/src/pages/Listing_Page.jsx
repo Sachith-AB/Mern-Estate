@@ -68,7 +68,7 @@ useEffect(()=>{
               <FaMapMarkerAlt className='text-green-700' />
               {listing.address}
             </p>
-            <div className='flex gap-4'>
+            <div className='flex gap-4 py-3'>
               <p className='bg-red-900 w-full max-w-[200px] text-white text-center p-1 rounded-md'>
                 {listing.type === 'rent' ? 'For Rent' : 'For Sale'}
               </p>
